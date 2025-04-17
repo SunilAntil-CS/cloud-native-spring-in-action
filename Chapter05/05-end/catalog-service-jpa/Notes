@@ -1,0 +1,22 @@
+
+How Custom methods are implemented  in Repository!
+
+[ ApplicationContext Startup ]
+         │
+         ├─ Scan packages for Repository interfaces
+         │   → Register RepositoryFactoryBean(for BookRepository)
+         │
+  [ Context Refresh ]
+         │
+         ├─ Instantiate each FactoryBean
+         │   → FactoryBean uses JpaRepositoryFactory
+         │       → Creates proxy implementing BookRepository
+         │       → Behind proxy: a SimpleJpaRepository<Book,Long> instance
+         │
+         ↓
+[ Your Code Calls repo.findByIsbn("123") ]
+         │
+         ├─ Proxy intercepts call
+         ├─ Delegates to SimpleJpaRepository
+         ├─ SimpleJpaRepository builds & runs JPQL query
+         └─ Returns result to your service
